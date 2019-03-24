@@ -14,6 +14,7 @@ public class GameContext {
 
     public final static double X_LIMIT = 1.24;
     public final static double Y_LIMIT = 0.7625;
+    public static final int LOCK = 300;
 
     private SocSmall abstract_robot;
 
@@ -24,9 +25,14 @@ public class GameContext {
     private Vec2 ball;
     private Vec2 ourGoal;
     private Vec2 opponentGoal;
+    private int countLocked;
+    private int side;
+
+    private Vec2 ballPosition;
 
     public final static int N_ATTACKERS=3;
-    public final static int N_DEFENDERS=2;
+    public final static int N_DEFENDERS=1;
+    public final static int N_OFFSIDE=1;
 
     /**
      * Constructeur de la classe GameContext
@@ -35,6 +41,7 @@ public class GameContext {
     public GameContext(SocSmall abstract_robot) {
 
         this.abstract_robot = abstract_robot;
+        this.countLocked = 0;
     } 
 
     /**
@@ -46,6 +53,11 @@ public class GameContext {
         this.ball= this.abstract_robot.getBall(curr_time);
         this.ourGoal = this.abstract_robot.getOurGoal(curr_time);
         this.opponentGoal = this.abstract_robot.getOpponentsGoal(curr_time);
+
+        if(this.ourGoal.x < 0)
+            this.side = -1;
+        else
+            this.side = 1;
     }
 
     public boolean ballIsInFront() {
@@ -87,6 +99,26 @@ public class GameContext {
         return false;
     }
 
+    public void countLocked() {
+        if (!this.isLocked()) {
+            countLocked = 0;
+        }
+        else {
+            countLocked++;
+        }
+        this.ballPosition = Utilities.getAbsolutePosition(this.ball, this.position);
+    }
+
+    public Boolean isLocked(){
+        if(this.ballPosition == null){
+            return false;
+        }
+        Vec2 anciennePos = this.ballPosition;
+        Vec2 nouvellePos = Utilities.getAbsolutePosition(this.ball, this.position);
+
+        return  Utilities.equalsPosition(anciennePos, nouvellePos, 0.04);
+
+    }
 
     /******** Accesseurs  ********/
 
@@ -144,4 +176,10 @@ public class GameContext {
     public Vec2 getPosition() {
         return position;
     }
+
+    public int getSide() {return this.side;}
+
+    public int getCountLocked() {return this.countLocked;}
+
+    public void setCountLocked(int value) {this.countLocked = value;}
 }

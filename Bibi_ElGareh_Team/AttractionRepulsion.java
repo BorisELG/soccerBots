@@ -82,6 +82,5 @@ public class AttractionRepulsion {
 
             return ourGoalAttraction;
         }
-
     }
 }

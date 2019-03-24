@@ -17,6 +17,7 @@ public class FrontStrikerBehaviour extends AttackBehaviour {
      */
     @Override
     public boolean isActivated() {
+        this.gameContext.getAbstractRobot().setDisplayString("Attack");
         return !this.gameContext.teammateCloserToTheBall();
     }
 
